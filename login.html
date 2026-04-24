@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Login / Register — Jeni's Boutique</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+<style>
+.auth-page{min-height:100vh;display:flex;align-items:stretch;}
+.auth-left{flex:1;background:var(--wine);padding:5rem 4rem;display:flex;flex-direction:column;justify-content:center;}
+.auth-right{flex:1;padding:5rem 4rem;display:flex;flex-direction:column;justify-content:center;background:var(--cream);}
+.auth-brand{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:#fff;margin-bottom:3rem;}
+.auth-brand span{color:var(--gold-light);font-style:italic;}
+.auth-left h2{font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:700;color:#fff;line-height:1.15;margin-bottom:1rem;}
+.auth-left p{font-size:.95rem;color:rgba(255,255,255,.6);line-height:1.75;max-width:360px;}
+.auth-features{list-style:none;margin-top:2.5rem;display:flex;flex-direction:column;gap:.8rem;}
+.auth-features li{display:flex;align-items:center;gap:.8rem;font-size:.88rem;color:rgba(255,255,255,.75);}
+.auth-features li::before{content:'✦';color:var(--gold-light);font-size:.6rem;}
+.tabs{display:flex;gap:0;margin-bottom:2.5rem;border:1.5px solid var(--border);border-radius:2px;overflow:hidden;}
+.tab{flex:1;padding:.75rem;text-align:center;font-size:.85rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;background:var(--ivory);color:var(--muted);transition:all .2s;border:none;}
+.tab.active{background:var(--wine);color:#fff;}
+.auth-form-wrap{max-width:420px;}
+.auth-form-wrap h3{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:var(--charcoal);margin-bottom:.4rem;}
+.auth-form-wrap p{font-size:.88rem;color:var(--muted);margin-bottom:2rem;}
+.form-error-main{background:#FEE;border:1px solid #F0BBBB;color:#A32D2D;padding:.75rem 1rem;border-radius:2px;font-size:.85rem;margin-bottom:1rem;display:none;}
+.form-error-main.show{display:block;}
+.field-error{font-size:.78rem;color:#A32D2D;margin-top:.3rem;display:none;}
+.field-error.show{display:block;}
+@media(max-width:768px){
+  .auth-page{flex-direction:column;}
+  .auth-left{padding:7rem 2rem 3rem;flex:none;}
+  .auth-right{padding:3rem 2rem;flex:none;}
+}
+</style>
+</head>
+<body>
+<nav id="main-nav"></nav>
+<div id="mobile-nav" class="mobile-nav"></div>
+
+<div class="auth-page">
+  <div class="auth-left">
+    <div class="auth-brand">Jeni's <span>Boutique</span></div>
+    <h2>Welcome to your tailoring experience</h2>
+    <p>Sign in or create an account to manage your orders, track deliveries, and save your measurements for future garments.</p>
+    <ul class="auth-features">
+      <li>Place and manage bespoke orders</li>
+      <li>Real-time order tracking</li>
+      <li>Save your measurements</li>
+      <li>Order history and reorder</li>
+      <li>WhatsApp order updates</li>
+    </ul>
+  </div>
+  <div class="auth-right">
+    <div class="auth-form-wrap">
+      <div class="tabs">
+        <button class="tab active" id="tab-login" onclick="switchTab('login')">Login</button>
+        <button class="tab" id="tab-register" onclick="switchTab('register')">Register</button>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <div id="login-form">
+        <h3>Sign in</h3>
+        <p>Welcome back! Please enter your credentials.</p>
+        <div id="login-error" class="form-error-main"></div>
+        <div class="form-group">
+          <label class="form-label">Email Address *</label>
+          <input class="form-input" id="l-email" type="email" placeholder="you@gmail.com"/>
+          <div class="field-error" id="le-email">Please enter a valid email address.</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password *</label>
+          <input class="form-input" id="l-password" type="password" placeholder="Your password"/>
+          <div class="field-error" id="le-pass">Please enter your password.</div>
+        </div>
+        <button class="btn btn-primary btn-block" style="margin-top:.5rem;" onclick="doLogin()">Sign In →</button>
+        <p style="font-size:.78rem;color:var(--muted);margin-top:1rem;text-align:center;">Don't have an account? <a href="#" onclick="switchTab('register')" style="color:var(--wine);">Register here</a></p>
+      </div>
+
+      <!-- REGISTER FORM -->
+      <div id="register-form" style="display:none;">
+        <h3>Create account</h3>
+        <p>Join Jeni's Boutique and start your bespoke journey.</p>
+        <div id="reg-error" class="form-error-main"></div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Full Name *</label>
+            <input class="form-input" id="r-name" placeholder="Your full name"/>
+            <div class="field-error" id="re-name">Please enter your name.</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone (10 digits) *</label>
+            <input class="form-input" id="r-phone" type="tel" placeholder="9876543210" maxlength="10" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)"/>
+            <div class="field-error" id="re-phone">Enter a valid 10-digit mobile number.</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address *</label>
+          <input class="form-input" id="r-email" type="email" placeholder="you@gmail.com"/>
+          <div class="field-error" id="re-email">Enter a valid email address (e.g. you@gmail.com).</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password *</label>
+          <input class="form-input" id="r-password" type="password" placeholder="Min. 6 characters"/>
+          <div class="field-error" id="re-pass">Password must be at least 6 characters.</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirm Password *</label>
+          <input class="form-input" id="r-confirm" type="password" placeholder="Repeat password"/>
+          <div class="field-error" id="re-confirm">Passwords do not match.</div>
+        </div>
+        <button class="btn btn-primary btn-block" style="margin-top:.5rem;" onclick="doRegister()">Create Account →</button>
+        <p style="font-size:.78rem;color:var(--muted);margin-top:1rem;text-align:center;">Already have an account? <a href="#" onclick="switchTab('login')" style="color:var(--wine);">Sign in</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+function switchTab(t){
+  document.getElementById('login-form').style.display=t==='login'?'block':'none';
+  document.getElementById('register-form').style.display=t==='register'?'block':'none';
+  document.getElementById('tab-login').className='tab'+(t==='login'?' active':'');
+  document.getElementById('tab-register').className='tab'+(t==='register'?' active':'');
+}
+
+function showFieldError(id,show){
+  const el=document.getElementById(id);
+  if(el)el.classList.toggle('show',show);
+}
+
+function doLogin(){
+  const email=document.getElementById('l-email').value.trim();
+  const pass=document.getElementById('l-password').value;
+  const err=document.getElementById('login-error');
+  err.classList.remove('show');
+  let ok=true;
+  if(!validateEmail(email)){showFieldError('le-email',true);ok=false;}else{showFieldError('le-email',false);}
+  if(!pass){showFieldError('le-pass',true);ok=false;}else{showFieldError('le-pass',false);}
+  if(!ok)return;
+  const res=Auth.login(email,pass);
+  if(res.ok){
+    showToast('Welcome back, '+res.user.name+'!','success');
+    const urlRedirect=new URLSearchParams(window.location.search).get('redirect');
+    const dest=res.user.role==='admin'?'admin.html':(urlRedirect||'dashboard.html');
+    setTimeout(()=>window.location.href=dest,800);
+  } else {
+    err.textContent=res.msg;err.classList.add('show');
+  }
+}
+
+function doRegister(){
+  const name=document.getElementById('r-name').value.trim();
+  const phone=document.getElementById('r-phone').value.trim();
+  const email=document.getElementById('r-email').value.trim();
+  const pass=document.getElementById('r-password').value;
+  const confirm=document.getElementById('r-confirm').value;
+  const err=document.getElementById('reg-error');
+  err.classList.remove('show');
+  let ok=true;
+  if(!name){showFieldError('re-name',true);ok=false;}else{showFieldError('re-name',false);}
+  if(!validatePhone(phone)){showFieldError('re-phone',true);ok=false;}else{showFieldError('re-phone',false);}
+  if(!validateEmail(email)){showFieldError('re-email',true);ok=false;}else{showFieldError('re-email',false);}
+  if(pass.length<6){showFieldError('re-pass',true);ok=false;}else{showFieldError('re-pass',false);}
+  if(pass!==confirm){showFieldError('re-confirm',true);ok=false;}else{showFieldError('re-confirm',false);}
+  if(!ok)return;
+  const res=Auth.register(name,email,phone,pass);
+  if(res.ok){
+    showToast('Account created! Welcome, '+res.user.name+'!','success');
+    const redirect=new URLSearchParams(window.location.search).get('redirect')||'dashboard.html';
+    setTimeout(()=>window.location.href=redirect,900);
+  } else {
+    err.textContent=res.msg;err.classList.add('show');
+  }
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  if(Auth.isLoggedIn())window.location.href='dashboard.html';
+  renderNav('login.html');
+  const p=new URLSearchParams(window.location.search);
+  if(p.get('tab')==='register')switchTab('register');
+  if(p.get('msg')==='login'){
+    // Show a notice that login is required to order
+    const notice=document.createElement('div');
+    notice.style.cssText='background:var(--warning-bg);border:1px solid #F0D080;color:var(--warning);padding:.75rem 1rem;border-radius:2px;font-size:.85rem;margin-bottom:1.2rem;';
+    notice.textContent='Please sign in or register to place an order.';
+    document.querySelector('.auth-form-wrap').insertBefore(notice,document.querySelector('.tabs'));
+  }
+  document.getElementById('l-password').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+  document.getElementById('r-confirm').addEventListener('keydown',e=>{if(e.key==='Enter')doRegister();});
+});
+</script>
+</body>
+</html>

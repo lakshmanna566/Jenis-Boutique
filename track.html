@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Track Order — Jeni's Boutique</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+<style>
+.track-hero{padding:8rem 3.5rem 4rem;background:var(--ivory);border-bottom:1px solid var(--border);}
+.search-bar{display:flex;gap:.8rem;margin-top:2rem;max-width:560px;}
+.search-bar .form-input{flex:1;font-size:1rem;padding:.85rem 1.2rem;}
+.search-btn{background:var(--wine);color:#fff;border:none;padding:.85rem 2rem;border-radius:2px;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;white-space:nowrap;transition:background .2s;}
+.search-btn:hover{background:var(--wine-deep);}
+.track-result{padding:4rem 3.5rem;}
+.track-layout{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start;}
+.order-info-card{background:var(--ivory);border:1px solid var(--border);padding:2rem;border-radius:2px;}
+.order-info-row{display:flex;justify-content:space-between;padding:.6rem 0;border-bottom:1px solid var(--border);font-size:.88rem;}
+.order-info-row:last-child{border-bottom:none;}
+.order-info-key{color:var(--muted);}
+.order-info-val{font-weight:500;color:var(--charcoal);text-align:right;}
+/* STATUS TIMELINE */
+.timeline{position:relative;padding-left:2rem;}
+.timeline::before{content:'';position:absolute;left:9px;top:0;bottom:0;width:2px;background:var(--border);}
+.tl-item{position:relative;margin-bottom:1.8rem;}
+.tl-item:last-child{margin-bottom:0;}
+.tl-dot{position:absolute;left:-1.95rem;top:2px;width:18px;height:18px;border-radius:50%;border:2.5px solid var(--border);background:var(--cream);z-index:1;}
+.tl-item.done .tl-dot{border-color:var(--wine);background:var(--wine);}
+.tl-item.current .tl-dot{border-color:var(--gold);background:var(--gold);box-shadow:0 0 0 4px rgba(201,168,76,.25);}
+.tl-status{font-weight:500;font-size:.92rem;color:var(--charcoal);}
+.tl-item.done .tl-status{color:var(--wine);}
+.tl-time{font-size:.78rem;color:var(--muted);margin-top:.2rem;}
+.tl-note{font-size:.82rem;color:var(--muted);margin-top:.3rem;font-style:italic;}
+/* PROGRESS BAR */
+.progress-wrap{margin:2rem 0;}
+.progress-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--wine),var(--gold));border-radius:3px;transition:width .5s ease;}
+.progress-steps{display:flex;justify-content:space-between;margin-top:.6rem;}
+.progress-step{font-size:.7rem;color:var(--muted);text-align:center;flex:1;}
+.progress-step.done{color:var(--wine);font-weight:500;}
+/* EMPTY STATE */
+.empty-track{text-align:center;padding:4rem 2rem;}
+.empty-icon{font-size:3rem;margin-bottom:1rem;}
+@media(max-width:800px){.track-hero{padding:7rem 2rem 3rem;}.track-result{padding:3rem 2rem;}.track-layout{grid-template-columns:1fr;}.search-bar{flex-direction:column;}}
+</style>
+</head>
+<body>
+<nav id="main-nav"></nav>
+<div id="mobile-nav" class="mobile-nav"></div>
+
+<div class="track-hero">
+  <div class="eyebrow" style="font-size:.75rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:.8rem;display:flex;align-items:center;gap:.6rem;"><span style="width:20px;height:1px;background:var(--gold);display:block;"></span>Track Order</div>
+  <h1 style="font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:700;color:var(--charcoal);">Where is your<br/><em style="color:var(--wine);">garment right now?</em></h1>
+  <p style="font-size:.95rem;color:var(--muted);margin-top:.6rem;">Enter your Order ID to see real-time status updates.</p>
+  <div class="search-bar">
+    <input class="form-input" id="order-id-input" placeholder="Order ID — e.g. ORD1001" value=""/>
+    <button class="search-btn" onclick="trackOrder()">Track</button>
+  </div>
+  <p style="font-size:.78rem;color:var(--muted);margin-top:.8rem;">Try demo order: <a href="#" onclick="document.getElementById('order-id-input').value='ORD1001';trackOrder();return false;" style="color:var(--wine);">ORD1001</a> or <a href="#" onclick="document.getElementById('order-id-input').value='ORD1002';trackOrder();return false;" style="color:var(--wine);">ORD1002</a></p>
+</div>
+
+<div id="track-result" style="display:none;" class="track-result">
+  <div id="not-found" style="display:none;" class="empty-track">
+    <div class="empty-icon">🔍</div>
+    <h3 style="font-family:'Playfair Display',serif;font-size:1.5rem;margin-bottom:.5rem;">Order Not Found</h3>
+    <p style="color:var(--muted);font-size:.9rem;">Please check your Order ID and try again. Your ID was sent via SMS when you placed the order.</p>
+  </div>
+  <div id="order-found">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2.5rem;flex-wrap:wrap;gap:1rem;">
+      <div>
+        <div style="font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:.3rem;">Order</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:var(--charcoal);" id="res-id">—</div>
+      </div>
+      <div id="res-status-badge"></div>
+    </div>
+    <!-- PROGRESS -->
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="progress-steps" id="progress-steps"></div>
+    </div>
+    <div class="track-layout">
+      <!-- ORDER INFO -->
+      <div>
+        <h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:600;margin-bottom:1.2rem;">Order Details</h3>
+        <div class="order-info-card">
+          <div class="order-info-row"><span class="order-info-key">Customer</span><span class="order-info-val" id="res-name">—</span></div>
+          <div class="order-info-row"><span class="order-info-key">Phone</span><span class="order-info-val" id="res-phone">—</span></div>
+          <div class="order-info-row"><span class="order-info-key">Occasion</span><span class="order-info-val" id="res-occasion">—</span></div>
+          <div class="order-info-row"><span class="order-info-key">Garment</span><span class="order-info-val" id="res-garment">—</span></div>
+          <div class="order-info-row"><span class="order-info-key">Fabric</span><span class="order-info-val" id="res-fabric">—</span></div>
+          <div class="order-info-row"><span class="order-info-key">Plan</span><span class="order-info-val" id="res-plan">—</span></div>
+          <div class="order-info-row"><span class="order-info-key">Add-Ons</span><span class="order-info-val" id="res-addons">—</span></div>
+          <div class="order-info-row"><span class="order-info-key">Delivery</span><span class="order-info-val" id="res-delivery">—</span></div>
+          <div class="order-info-row"><span class="order-info-key">Order Date</span><span class="order-info-val" id="res-placed">—</span></div>
+          <div class="order-info-row"><span class="order-info-key">Est. Delivery</span><span class="order-info-val" id="res-eta">—</span></div>
+          <div class="order-info-row"><span class="order-info-key">Cost</span><span class="order-info-val" id="res-cost" style="color:var(--wine);font-family:'Playfair Display',serif;font-size:1.1rem;">—</span></div>
+        </div>
+        <div style="margin-top:1.2rem;display:flex;gap:.8rem;flex-wrap:wrap;">
+          <a href="dashboard.html" class="btn btn-secondary btn-sm">My Dashboard</a>
+          <a href="order.html" class="btn btn-primary btn-sm">New Order</a>
+        </div>
+      </div>
+      <!-- TIMELINE -->
+      <div>
+        <h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:600;margin-bottom:1.5rem;">Status Timeline</h3>
+        <div class="timeline" id="timeline"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW TRACKING WORKS -->
+<section class="section alt" id="how-section">
+  <div class="section-label">Status Guide</div>
+  <h2 class="section-title">What each status means</h2>
+  <div class="grid-3" style="margin-top:2rem;">
+    <div class="card flat" style="border-left:3px solid var(--info);padding-left:1.5rem;">
+      <div class="badge badge-info" style="margin-bottom:.6rem;">Received</div>
+      <p style="font-size:.88rem;color:var(--muted);">We've received your order and are preparing materials.</p>
+    </div>
+    <div class="card flat" style="border-left:3px solid #C9A84C;padding-left:1.5rem;">
+      <div class="badge badge-warning" style="margin-bottom:.6rem;">Cutting</div>
+      <p style="font-size:.88rem;color:var(--muted);">Your fabric has been cut to your measurements.</p>
+    </div>
+    <div class="card flat" style="border-left:3px solid #C9A84C;padding-left:1.5rem;">
+      <div class="badge badge-warning" style="margin-bottom:.6rem;">Stitching</div>
+      <p style="font-size:.88rem;color:var(--muted);">Our master tailor is stitching your garment.</p>
+    </div>
+    <div class="card flat" style="border-left:3px solid #C9A84C;padding-left:1.5rem;">
+      <div class="badge badge-warning" style="margin-bottom:.6rem;">Quality Check</div>
+      <p style="font-size:.88rem;color:var(--muted);">Final inspection for fit, finish and quality.</p>
+    </div>
+    <div class="card flat" style="border-left:3px solid var(--success);padding-left:1.5rem;">
+      <div class="badge badge-success" style="margin-bottom:.6rem;">Ready</div>
+      <p style="font-size:.88rem;color:var(--muted);">Your garment is ready and dispatched for delivery.</p>
+    </div>
+    <div class="card flat" style="border-left:3px solid var(--success);padding-left:1.5rem;">
+      <div class="badge badge-success" style="margin-bottom:.6rem;">Delivered</div>
+      <p style="font-size:.88rem;color:var(--muted);">Successfully delivered to your address. Enjoy!</p>
+    </div>
+  </div>
+</section>
+
+<footer id="main-footer"></footer>
+<script src="app.js"></script>
+<script>
+const STATUS_FLOW=['Received','Cutting','Stitching','Quality Check','Ready','Out for Delivery','Delivered'];
+
+function trackOrder(){
+  const id=document.getElementById('order-id-input').value.trim();
+  if(!id)return;
+  const order=Orders.byId(id);
+  document.getElementById('track-result').style.display='block';
+  document.getElementById('how-section').style.display='none';
+  if(!order){
+    document.getElementById('not-found').style.display='block';
+    document.getElementById('order-found').style.display='none';
+    return;
+  }
+  document.getElementById('not-found').style.display='none';
+  document.getElementById('order-found').style.display='block';
+  // Fill details
+  document.getElementById('res-id').textContent=order.id;
+  document.getElementById('res-status-badge').innerHTML=statusBadge(order.status);
+  document.getElementById('res-name').textContent=order.userName||order.name||'—';
+  document.getElementById('res-phone').textContent=order.userPhone||order.phone||'—';
+  document.getElementById('res-occasion').textContent=order.occasion||'—';
+  document.getElementById('res-garment').textContent=order.garment||'—';
+  document.getElementById('res-fabric').textContent=order.fabric||'—';
+  document.getElementById('res-plan').textContent=order.plan||'—';
+  document.getElementById('res-addons').textContent=order.addOns&&order.addOns.length?order.addOns.join(', '):'None';
+  document.getElementById('res-delivery').textContent=order.delivery||'—';
+  document.getElementById('res-placed').textContent=fmtDate(order.placedAt);
+  document.getElementById('res-eta').textContent=fmtDate(order.estimatedDelivery);
+  document.getElementById('res-cost').textContent=order.cost?'₹'+Number(order.cost).toLocaleString('en-IN'):'Contact us';
+  // Progress bar
+  const idx=STATUS_FLOW.indexOf(order.status);
+  const pct=Math.round(((idx+1)/STATUS_FLOW.length)*100);
+  document.getElementById('progress-fill').style.width=pct+'%';
+  const psEl=document.getElementById('progress-steps');
+  psEl.innerHTML=STATUS_FLOW.map((s,i)=>`<span class="progress-step ${i<=idx?'done':''}">${s}</span>`).join('');
+  // Timeline
+  const tl=document.getElementById('timeline');
+  tl.innerHTML=order.statusHistory.slice().reverse().map((h,i)=>{
+    const isCurrent=i===0&&order.status!=='Delivered';
+    return`<div class="tl-item ${isCurrent?'current':'done'}">
+      <div class="tl-dot"></div>
+      <div class="tl-status">${h.status}</div>
+      <div class="tl-time">${fmtDateTime(h.time)}</div>
+      ${h.note?`<div class="tl-note">${h.note}</div>`:''}
+    </div>`;
+  }).join('');
+  window.scrollTo({top:document.querySelector('.track-hero').offsetHeight+60,behavior:'smooth'});
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  renderNav('track.html');
+  renderFooter();
+  const p=new URLSearchParams(window.location.search);
+  if(p.get('id')){
+    document.getElementById('order-id-input').value=p.get('id');
+    trackOrder();
+  }
+  document.getElementById('order-id-input').addEventListener('keydown',e=>{if(e.key==='Enter')trackOrder();});
+});
+</script>
+</body>
+</html>

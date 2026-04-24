@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Place Order — Jeni's Boutique</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+<style>
+.order-layout{display:grid;grid-template-columns:1fr 380px;gap:3rem;padding:8rem 3.5rem 5rem;align-items:start;}
+.order-form-wrap{background:var(--cream);border:1px solid var(--border);border-radius:2px;padding:2.5rem;}
+.form-section{margin-bottom:2.5rem;padding-bottom:2.5rem;border-bottom:1px solid var(--border);}
+.form-section:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none;}
+.form-section-title{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:600;color:var(--charcoal);margin-bottom:1.5rem;}
+.form-section-num{display:inline-flex;width:28px;height:28px;border-radius:50%;background:var(--wine);color:#fff;font-size:.8rem;font-weight:600;align-items:center;justify-content:center;margin-right:.6rem;}
+.fabric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:1rem;}
+.fabric-opt{border:1.5px solid var(--border);border-radius:2px;padding:.7rem .5rem;cursor:pointer;text-align:center;transition:all .18s;}
+.fabric-opt:hover{border-color:var(--wine-light);}
+.fabric-opt.selected{border-color:var(--wine);background:var(--wine-faint);}
+.fabric-opt-name{font-size:.8rem;font-weight:500;margin-top:.3rem;}
+.fabric-opt-swatch{width:100%;height:36px;border-radius:1px;margin-bottom:.3rem;}
+.addon-checks{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+.addon-check{border:1.5px solid var(--border);border-radius:2px;padding:.8rem;cursor:pointer;transition:all .18s;display:flex;align-items:flex-start;gap:.6rem;}
+.addon-check:hover{border-color:var(--wine-light);}
+.addon-check.selected{border-color:var(--wine);background:var(--wine-faint);}
+.addon-check input{width:15px;height:15px;accent-color:var(--wine);flex-shrink:0;margin-top:2px;}
+.addon-info{flex:1;}
+.addon-check-name{font-size:.85rem;font-weight:500;color:var(--charcoal);}
+.addon-check-price{font-size:.75rem;color:var(--wine);margin-top:.1rem;}
+/* SIDEBAR */
+.order-summary{position:sticky;top:100px;}
+.summary-card{background:var(--ivory);border:1px solid var(--border);border-radius:2px;padding:2rem;}
+.summary-title{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:600;color:var(--charcoal);margin-bottom:1.5rem;}
+.summary-row{display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid var(--border);font-size:.88rem;}
+.summary-row:last-of-type{border-bottom:none;}
+.summary-key{color:var(--muted);}
+.summary-val{font-weight:500;color:var(--charcoal);}
+.summary-total{display:flex;justify-content:space-between;align-items:center;padding:1rem 0 0;margin-top:.5rem;border-top:2px solid var(--wine);}
+.summary-total-label{font-size:.88rem;font-weight:500;color:var(--charcoal);}
+.summary-total-val{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--wine);}
+.step-indicator{display:flex;gap:0;margin-bottom:2.5rem;}
+.step-ind{flex:1;padding:.6rem .5rem;text-align:center;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;font-weight:500;background:var(--ivory);border:1px solid var(--border);color:var(--muted);cursor:pointer;transition:all .2s;}
+.step-ind:first-child{border-radius:2px 0 0 2px;}
+.step-ind:last-child{border-radius:0 2px 2px 0;}
+.step-ind.active{background:var(--wine);color:#fff;border-color:var(--wine);}
+.step-ind.done{background:var(--success-bg);color:var(--success);border-color:#C3E0CC;}
+.meas-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;}
+.success-overlay{display:none;position:fixed;inset:0;background:rgba(44,36,32,.6);z-index:600;align-items:center;justify-content:center;}
+.success-overlay.show{display:flex;}
+.success-box{background:var(--cream);border-radius:2px;padding:3.5rem;max-width:480px;width:90%;text-align:center;}
+.success-icon{font-size:3.5rem;margin-bottom:1.2rem;}
+.success-title{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--charcoal);margin-bottom:.8rem;}
+.success-id{font-size:.85rem;color:var(--muted);margin-bottom:1.5rem;}
+.success-id strong{color:var(--wine);}
+@media(max-width:960px){.order-layout{grid-template-columns:1fr;padding:7rem 2rem 4rem;}.order-summary{position:static;}}
+@media(max-width:500px){.fabric-grid{grid-template-columns:repeat(2,1fr);}.meas-grid{grid-template-columns:1fr 1fr;}.addon-checks{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav id="main-nav"></nav>
+<div id="mobile-nav" class="mobile-nav"></div>
+
+<div class="order-layout">
+  <!-- FORM -->
+  <div>
+    <div class="eyebrow" style="font-size:.75rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:.8rem;display:flex;align-items:center;gap:.6rem;"><span style="width:20px;height:1px;background:var(--gold);display:block;"></span>Place an Order</div>
+    <h1 style="font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:700;color:var(--charcoal);margin-bottom:.5rem;">Your bespoke garment<br/><em style="color:var(--wine);">starts here.</em></h1>
+    <p style="font-size:.92rem;color:var(--muted);margin-bottom:2.5rem;">Fill in the details below and we'll get started on your order immediately.</p>
+
+    <div class="step-indicator">
+      <div class="step-ind active" id="si-1">1. Your Details</div>
+      <div class="step-ind" id="si-2">2. Garment</div>
+      <div class="step-ind" id="si-3">3. Measurements</div>
+      <div class="step-ind" id="si-4">4. Delivery</div>
+    </div>
+
+    <div id="form-success" class="form-success">Order placed! Redirecting…</div>
+
+    <!-- STEP 1: PERSONAL -->
+    <div id="step-1" class="order-form-wrap">
+      <div id="login-user-banner" style="display:none;background:var(--success-bg);border:1px solid #C3E0CC;padding:.85rem 1.2rem;border-radius:2px;margin-bottom:1.5rem;display:flex;align-items:center;gap:.8rem;">
+        <span style="font-size:1.1rem;">✓</span>
+        <span style="font-size:.88rem;color:var(--success);">Placing order as <strong id="banner-name"></strong> — your details are pre-filled below.</span>
+      </div>
+      <div class="form-section">
+        <div class="form-section-title"><span class="form-section-num">1</span>Personal Details</div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Full Name *</label><input class="form-input" id="f-name" placeholder="Your full name"/><div class="form-error" id="e-name">Please enter your name.</div></div>
+          <div class="form-group"><label class="form-label">Phone Number (10 digits) *</label><input class="form-input" id="f-phone" placeholder="9876543210" type="tel" maxlength="10" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)"/><div class="form-error" id="e-phone">Enter a valid 10-digit mobile number.</div></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Email Address *</label><input class="form-input" id="f-email" placeholder="you@gmail.com" type="email"/><div class="form-error" id="e-email">Enter a valid email address.</div></div>
+          <div class="form-group"><label class="form-label">Plan *</label>
+            <select class="form-select" id="f-plan" onchange="updateSummary()">
+              <option value="Basic">Basic Plan — from ₹599/garment</option>
+              <option value="Plus">Plus Plan — from ₹999/garment ✦</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group"><label class="form-label">Occasion *</label>
+          <select class="form-select" id="f-occasion" onchange="updateSummary()">
+            <option value="Birthday">Birthday</option>
+            <option value="Marriage">Marriage / Wedding</option>
+            <option value="Custom">Custom / Other</option>
+            <option value="Festival">Festival / Pooja</option>
+            <option value="Office">Office / Formal</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" onclick="nextStep(1)">Continue to Garment Details →</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: GARMENT -->
+    <div id="step-2" class="order-form-wrap" style="display:none;">
+      <div class="form-section">
+        <div class="form-section-title"><span class="form-section-num">2</span>Garment Details</div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Garment Type *</label>
+            <select class="form-select" id="f-garment" onchange="updateSummary()">
+              <option>Salwar Kameez</option><option>Lehenga Choli</option><option>Anarkali Suit</option>
+              <option>Saree Blouse</option><option>Kurta Pyjama</option><option>Sherwani</option>
+              <option>Dhoti Kurta</option><option>Western Dress</option><option>Blazer / Coat</option><option>Other</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Gender</label>
+            <select class="form-select" id="f-gender">
+              <option>Women</option><option>Men</option><option>Kids (Girl)</option><option>Kids (Boy)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group"><label class="form-label">Choose Fabric *</label>
+          <div class="fabric-grid" id="fabric-grid"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Colour Preference</label><input class="form-input" id="f-colour" placeholder="e.g. Deep Red, Navy Blue"/></div>
+          <div class="form-group"><label class="form-label">Number of Garments *</label>
+            <select class="form-select" id="f-qty" onchange="updateSummary()">
+              <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+              <option value="4">4</option><option value="5">5</option><option value="6+">6 or more</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group"><label class="form-label">Add-Ons</label>
+          <div class="addon-checks" id="addon-checks"></div>
+        </div>
+        <div class="form-group"><label class="form-label">Special Instructions</label>
+          <textarea class="form-textarea" id="f-notes" placeholder="Describe specific design, embroidery patterns, reference images, etc."></textarea>
+        </div>
+        <div style="display:flex;gap:1rem;">
+          <button class="btn btn-secondary" onclick="goStep(1)">← Back</button>
+          <button class="btn btn-primary" onclick="nextStep(2)">Continue to Measurements →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3: MEASUREMENTS -->
+    <div id="step-3" class="order-form-wrap" style="display:none;">
+      <div class="form-section">
+        <div class="form-section-title"><span class="form-section-num">3</span>Measurements</div>
+        <div style="background:var(--info-bg);border:1px solid #B3D1E8;padding:1rem;border-radius:2px;margin-bottom:1.5rem;font-size:.85rem;color:var(--info);">
+          ℹ️ All measurements in <strong>inches</strong>. If you prefer a home visit (Plus plan), check the box below.
+        </div>
+        <div class="form-group">
+          <label style="display:flex;align-items:center;gap:.6rem;cursor:pointer;">
+            <input type="checkbox" id="f-home-visit" style="accent-color:var(--wine);width:15px;height:15px;" onchange="toggleHomeVisit()"/>
+            <span style="font-size:.9rem;">I'd like a <strong>home measurement visit</strong> (Plus plan only)</span>
+          </label>
+        </div>
+        <div id="meas-fields">
+          <div class="meas-grid">
+            <div class="form-group"><label class="form-label">Chest / Bust</label><input class="form-input" id="m-chest" placeholder="e.g. 36" type="number"/></div>
+            <div class="form-group"><label class="form-label">Waist</label><input class="form-input" id="m-waist" placeholder="e.g. 30" type="number"/></div>
+            <div class="form-group"><label class="form-label">Hips</label><input class="form-input" id="m-hips" placeholder="e.g. 38" type="number"/></div>
+            <div class="form-group"><label class="form-label">Shoulder</label><input class="form-input" id="m-shoulder" placeholder="e.g. 14" type="number"/></div>
+            <div class="form-group"><label class="form-label">Sleeve Length</label><input class="form-input" id="m-sleeve" placeholder="e.g. 22" type="number"/></div>
+            <div class="form-group"><label class="form-label">Full Length</label><input class="form-input" id="m-length" placeholder="e.g. 52" type="number"/></div>
+          </div>
+        </div>
+        <div id="home-visit-msg" style="display:none;background:var(--success-bg);border:1px solid #C3E0CC;padding:1rem;border-radius:2px;font-size:.88rem;color:var(--success);">
+          ✓ Our tailor will contact you within 24 hours to schedule your home measurement visit.
+        </div>
+        <div style="display:flex;gap:1rem;margin-top:1rem;">
+          <button class="btn btn-secondary" onclick="goStep(2)">← Back</button>
+          <button class="btn btn-primary" onclick="nextStep(3)">Continue to Delivery →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4: DELIVERY -->
+    <div id="step-4" class="order-form-wrap" style="display:none;">
+      <div class="form-section">
+        <div class="form-section-title"><span class="form-section-num">4</span>Delivery Details</div>
+        <div class="form-group"><label class="form-label">Delivery Method *</label>
+          <select class="form-select" id="f-delivery" onchange="updateSummary()">
+            <option value="Home Delivery">Home Delivery (Bengaluru, Karnataka)</option>
+            <option value="Store Pickup">Store Pickup — Jeni's Boutique, Bengaluru</option>
+            <option value="Express Delivery">Express Home Delivery (48h) +₹149</option>
+          </select>
+        </div>
+        <div id="address-fields">
+          <div class="form-group"><label class="form-label">Full Delivery Address *</label>
+            <textarea class="form-textarea" id="f-address" placeholder="House/Flat No., Street, Area, City, PIN" style="min-height:70px;"></textarea>
+            <div class="form-error" id="e-address">Please enter your delivery address.</div>
+          </div>
+        </div>
+        <div class="form-group"><label class="form-label">Preferred Delivery Date</label>
+          <input class="form-input" id="f-date" type="date"/>
+        </div>
+        <div style="display:flex;gap:1rem;margin-top:1rem;">
+          <button class="btn btn-secondary" onclick="goStep(3)">← Back</button>
+          <button class="btn btn-primary" onclick="placeOrder()" id="submit-btn">✦ Place Order</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIDEBAR SUMMARY -->
+  <div class="order-summary">
+    <div class="summary-card">
+      <div class="summary-title">Order Summary</div>
+      <div id="summary-body">
+        <div class="summary-row"><span class="summary-key">Plan</span><span class="summary-val" id="s-plan">Basic</span></div>
+        <div class="summary-row"><span class="summary-key">Occasion</span><span class="summary-val" id="s-occasion">Birthday</span></div>
+        <div class="summary-row"><span class="summary-key">Garment</span><span class="summary-val" id="s-garment">Salwar Kameez</span></div>
+        <div class="summary-row"><span class="summary-key">Qty</span><span class="summary-val" id="s-qty">1</span></div>
+        <div class="summary-row"><span class="summary-key">Add-Ons</span><span class="summary-val" id="s-addons">None</span></div>
+        <div class="summary-row"><span class="summary-key">Delivery</span><span class="summary-val" id="s-delivery">Home</span></div>
+        <div class="summary-total">
+          <span class="summary-total-label">Estimated Total</span>
+          <span class="summary-total-val" id="s-total">₹599</span>
+        </div>
+      </div>
+      <div style="margin-top:1.2rem;padding:1rem;background:var(--success-bg);border-radius:2px;font-size:.8rem;color:var(--success);">
+        ✓ Final price confirmed after fabric & design review by our team.
+      </div>
+    </div>
+    <div style="margin-top:1.2rem;background:var(--ivory);border:1px solid var(--border);padding:1.2rem;border-radius:2px;">
+      <div style="font-size:.78rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:.8rem;">We Accept</div>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+        <span class="badge badge-muted">UPI</span><span class="badge badge-muted">Cash on Delivery</span>
+        <span class="badge badge-muted">Bank Transfer</span><span class="badge badge-muted">Card</span>
+      </div>
+      <div style="font-size:.78rem;color:var(--muted);margin-top:.8rem;">Payment collected on delivery or via WhatsApp after order confirmation.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS OVERLAY -->
+<div class="success-overlay" id="success-overlay">
+  <div class="success-box">
+    <div class="success-icon">🎉</div>
+    <div class="success-title">Order Placed!</div>
+    <div class="success-id">Your order ID is <strong id="success-order-id">—</strong></div>
+    <p style="font-size:.88rem;color:var(--muted);margin-bottom:2rem;">We'll contact you within 2 hours to confirm your order. Track your order status anytime.</p>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+      <a href="track.html" id="track-link" class="btn btn-primary">Track Order</a>
+      <a href="dashboard.html" class="btn btn-secondary">My Dashboard</a>
+    </div>
+  </div>
+</div>
+
+<footer id="main-footer"></footer>
+<script src="app.js"></script>
+<script>
+const FABRICS=[
+  {name:'Cotton Linen',color:'#E8DCC8'},{name:'Banarasi Silk',color:'#8B1A2A'},{name:'Georgette',color:'#C9A0DC'},
+  {name:'Chiffon',color:'#F0E6D3'},{name:'Raw Silk',color:'#C4A44A'},{name:'Velvet',color:'#3D1A5C'},
+  {name:'Cotton',color:'#D4C5A9'},{name:'Crepe',color:'#A8C4D4'},{name:'Net / Mesh',color:'#E8E8E8'}
+];
+const ADDONS=[
+  {id:'embroidery',name:'Embroidery',price:299},{id:'lining',name:'Premium Lining',price:199},
+  {id:'family',name:'Family Matching',price:499},{id:'buttons',name:'Custom Buttons',price:99},
+  {id:'monogram',name:'Monogram',price:149},{id:'packaging',name:'Gift Packaging',price:79}
+];
+let selectedFabric='Cotton Linen', selectedAddons=[], currentStep=1;
+
+function buildFabricGrid(){
+  const g=document.getElementById('fabric-grid');
+  g.innerHTML=FABRICS.map(f=>`
+    <div class="fabric-opt ${f.name===selectedFabric?'selected':''}" onclick="selectFabric('${f.name}')">
+      <div class="fabric-opt-swatch" style="background:${f.color};"></div>
+      <div class="fabric-opt-name">${f.name}</div>
+    </div>`).join('');
+}
+function selectFabric(name){selectedFabric=name;buildFabricGrid();updateSummary();}
+
+function buildAddonChecks(){
+  const g=document.getElementById('addon-checks');
+  g.innerHTML=ADDONS.map(a=>`
+    <label class="addon-check ${selectedAddons.includes(a.id)?'selected':''}" onclick="toggleAddon('${a.id}',this)">
+      <input type="checkbox" ${selectedAddons.includes(a.id)?'checked':''} onclick="event.stopPropagation()"/>
+      <div class="addon-info">
+        <div class="addon-check-name">${a.name}</div>
+        <div class="addon-check-price">+₹${a.price}</div>
+      </div>
+    </label>`).join('');
+}
+function toggleAddon(id,el){
+  const idx=selectedAddons.indexOf(id);
+  if(idx>-1)selectedAddons.splice(idx,1);else selectedAddons.push(id);
+  el.classList.toggle('selected');
+  el.querySelector('input').checked=selectedAddons.includes(id);
+  updateSummary();
+}
+
+function updateSummary(){
+  const plan=document.getElementById('f-plan').value;
+  const occasion=document.getElementById('f-occasion').value;
+  const garment=document.getElementById('f-garment')?document.getElementById('f-garment').value:'—';
+  const qty=parseInt(document.getElementById('f-qty')?document.getElementById('f-qty').value:1)||1;
+  const delivery=document.getElementById('f-delivery')?document.getElementById('f-delivery').value:'Home Delivery';
+  const base=plan==='Plus'?999:599;
+  let total=base*Math.min(qty,6);
+  ADDONS.forEach(a=>{if(selectedAddons.includes(a.id))total+=a.price;});
+  if(delivery.includes('Express'))total+=149;
+  document.getElementById('s-plan').textContent=plan;
+  document.getElementById('s-occasion').textContent=occasion;
+  document.getElementById('s-garment').textContent=garment;
+  document.getElementById('s-qty').textContent=qty;
+  document.getElementById('s-addons').textContent=selectedAddons.length?selectedAddons.join(', '):'None';
+  document.getElementById('s-delivery').textContent=delivery.split(' ')[0]+' '+delivery.split(' ')[1];
+  document.getElementById('s-total').textContent='₹'+total.toLocaleString('en-IN')+(qty>=6?'+':'');
+  // update delivery address visibility
+  const del=document.getElementById('f-delivery');
+  const addrFields=document.getElementById('address-fields');
+  if(del&&addrFields)addrFields.style.display=del.value.includes('Store')?'none':'block';
+}
+
+function goStep(n){
+  document.getElementById(`step-${currentStep}`).style.display='none';
+  document.getElementById(`si-${currentStep}`).className='step-ind done';
+  currentStep=n;
+  document.getElementById(`step-${n}`).style.display='block';
+  document.getElementById(`si-${n}`).className='step-ind active';
+  window.scrollTo({top:80,behavior:'smooth'});
+}
+
+function nextStep(from){
+  if(from===1){
+    const name=document.getElementById('f-name').value.trim();
+    const phone=document.getElementById('f-phone').value.trim();
+    const email=document.getElementById('f-email').value.trim();
+    let ok=true;
+    if(!name){document.getElementById('e-name').classList.add('show');ok=false;}else{document.getElementById('e-name').classList.remove('show');}
+    if(!validatePhone(phone)){document.getElementById('e-phone').classList.add('show');ok=false;}else{document.getElementById('e-phone').classList.remove('show');}
+    if(!validateEmail(email)){document.getElementById('e-email').classList.add('show');ok=false;}else{document.getElementById('e-email').classList.remove('show');}
+    if(!ok)return;
+  }
+  if(from===4){placeOrder();return;}
+  goStep(from+1);
+}
+
+function toggleHomeVisit(){
+  const hv=document.getElementById('f-home-visit').checked;
+  document.getElementById('meas-fields').style.display=hv?'none':'block';
+  document.getElementById('home-visit-msg').style.display=hv?'block':'none';
+}
+
+function placeOrder(){
+  const delivery=document.getElementById('f-delivery').value;
+  const address=document.getElementById('f-address')?document.getElementById('f-address').value:'';
+  if(!delivery.includes('Store')&&!address.trim()){
+    document.getElementById('e-address').classList.add('show');return;
+  }
+  if(document.getElementById('e-address'))document.getElementById('e-address').classList.remove('show');
+
+  const orderData={
+    name:document.getElementById('f-name').value,
+    phone:document.getElementById('f-phone').value,
+    email:document.getElementById('f-email').value,
+    plan:document.getElementById('f-plan').value,
+    occasion:document.getElementById('f-occasion').value,
+    garment:document.getElementById('f-garment').value,
+    gender:document.getElementById('f-gender').value,
+    fabric:selectedFabric,
+    colour:document.getElementById('f-colour').value,
+    qty:document.getElementById('f-qty').value,
+    addOns:selectedAddons.map(id=>ADDONS.find(a=>a.id===id).name),
+    notes:document.getElementById('f-notes').value,
+    homeVisit:document.getElementById('f-home-visit').checked,
+    measurements:{
+      chest:document.getElementById('m-chest').value,
+      waist:document.getElementById('m-waist').value,
+      hips:document.getElementById('m-hips').value,
+      shoulder:document.getElementById('m-shoulder').value,
+      sleeve:document.getElementById('m-sleeve').value,
+      length:document.getElementById('m-length').value
+    },
+    delivery,
+    address,
+    preferredDate:document.getElementById('f-date').value,
+    cost:parseInt(document.getElementById('s-total').textContent.replace(/[^0-9]/g,''))||599
+  };
+  const order=Orders.create(orderData);
+  document.getElementById('success-order-id').textContent=order.id;
+  document.getElementById('track-link').href=`track.html?id=${order.id}`;
+  document.getElementById('success-overlay').classList.add('show');
+}
+
+// PRE-FILL FROM URL PARAMS
+function prefillFromParams(){
+  const p=new URLSearchParams(window.location.search);
+  if(p.get('plan')){const s=document.getElementById('f-plan');s.value=p.get('plan');}
+  if(p.get('occasion')){const s=document.getElementById('f-occasion');s.value=p.get('occasion');}
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  // Require login to place order
+  if(!Auth.isLoggedIn()){
+    window.location.href='login.html?redirect=order.html&msg=login';
+    return;
+  }
+  renderNav('order.html');
+  renderFooter();
+  // Pre-fill personal details from logged-in user
+  const user=Auth.currentUser();
+  if(user){
+    const nameEl=document.getElementById('f-name');
+    const emailEl=document.getElementById('f-email');
+    const phoneEl=document.getElementById('f-phone');
+    if(nameEl&&user.name){nameEl.value=user.name;nameEl.readOnly=true;nameEl.style.background='var(--ivory)';}
+    if(emailEl&&user.email){emailEl.value=user.email;emailEl.readOnly=true;emailEl.style.background='var(--ivory)';}
+    if(phoneEl&&user.phone){phoneEl.value=user.phone;phoneEl.readOnly=true;phoneEl.style.background='var(--ivory)';}
+    // Show banner
+    const banner=document.getElementById('login-user-banner');
+    if(banner){banner.style.display='flex';document.getElementById('banner-name').textContent=user.name;}
+  }
+  buildFabricGrid();
+  buildAddonChecks();
+  prefillFromParams();
+  updateSummary();
+  // set min date
+  const d=document.getElementById('f-date');
+  const min=new Date();min.setDate(min.getDate()+2);
+  d.min=min.toISOString().split('T')[0];
+  d.value=new Date(Date.now()+5*86400000).toISOString().split('T')[0];
+  // delivery change
+  document.getElementById('f-delivery').addEventListener('change',updateSummary);
+});
+</script>
+</body>
+</html>

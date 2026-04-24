@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Occasions — Jeni's Boutique</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+<style>
+.occ-hero{display:grid;grid-template-columns:1fr 1fr;min-height:360px;}
+.occ-hero-left{background:var(--wine);padding:8rem 3.5rem 4rem;display:flex;flex-direction:column;justify-content:flex-end;}
+.occ-hero-right{background:var(--ivory);padding:8rem 3.5rem 4rem;display:flex;flex-direction:column;justify-content:flex-end;}
+.occ-section{padding:5rem 3.5rem;border-bottom:1px solid var(--border);}
+.occ-section:last-of-type{border-bottom:none;}
+.occ-section.alt{background:var(--ivory);}
+.occ-inner{display:grid;grid-template-columns:1fr 2fr;gap:4rem;align-items:start;}
+.occ-inner.reverse{grid-template-columns:2fr 1fr;}
+.occ-num{font-family:'Playfair Display',serif;font-size:5rem;font-weight:700;color:var(--border);line-height:1;}
+.occ-label{font-size:.75rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:.5rem;}
+.occ-title{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:var(--charcoal);margin-bottom:1rem;}
+.occ-body{font-size:.95rem;color:var(--muted);line-height:1.75;margin-bottom:1.5rem;}
+.feature-list{list-style:none;display:flex;flex-direction:column;gap:.65rem;}
+.feature-list li{display:flex;gap:.8rem;align-items:baseline;font-size:.9rem;color:var(--charcoal);}
+.feature-list li::before{content:'✦';color:var(--gold);font-size:.55rem;flex-shrink:0;}
+.gallery{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.gallery-item{aspect-ratio:3/2;background:var(--border);border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:3rem;overflow:hidden;}
+.gallery-item.tall{aspect-ratio:2/3;}
+.price-tag{display:inline-flex;align-items:center;gap:.5rem;background:var(--wine-faint);border:1px solid #E8B8C2;padding:.4rem .9rem;border-radius:2px;margin-top:1rem;}
+.price-label{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);}
+.price-value{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:600;color:var(--wine);}
+.occasion-types{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:2rem;}
+.occ-type{background:var(--cream);border:1px solid var(--border);padding:1.5rem;border-radius:2px;}
+.occ-type-icon{font-size:1.5rem;margin-bottom:.6rem;}
+.occ-type-name{font-weight:500;font-size:.95rem;margin-bottom:.3rem;}
+.occ-type-desc{font-size:.82rem;color:var(--muted);}
+@media(max-width:900px){
+  .occ-hero{grid-template-columns:1fr;}
+  .occ-inner,.occ-inner.reverse{grid-template-columns:1fr;}
+  .occ-section{padding:3rem 2rem;}
+  .occasion-types{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+<nav id="main-nav"></nav>
+<div id="mobile-nav" class="mobile-nav"></div>
+
+<div class="occ-hero">
+  <div class="occ-hero-left">
+    <div class="eyebrow" style="font-size:.75rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:.8rem;">Our Specialties</div>
+    <h1 style="font-family:'Playfair Display',serif;font-size:clamp(2.2rem,4vw,3rem);color:#fff;font-weight:700;line-height:1.1;">Tailored for<br/><em>every occasion</em></h1>
+  </div>
+  <div class="occ-hero-right">
+    <p style="font-size:1rem;color:var(--muted);line-height:1.75;max-width:420px;">From intimate birthday celebrations to grand weddings — Jeni's creates bespoke garments that fit the occasion, the person, and the moment perfectly.</p>
+    <div style="margin-top:1.5rem;"><a href="order.html" class="btn btn-primary">Place an Order</a></div>
+  </div>
+</div>
+
+<!-- BIRTHDAY -->
+<section class="occ-section" id="birthday">
+  <div class="occ-inner">
+    <div>
+      <div class="occ-num">01</div>
+      <div style="margin-top:1.5rem;">
+        <div class="occ-label">Celebration</div>
+        <h2 class="occ-title">Birthday</h2>
+        <p class="occ-body">Your birthday deserves a garment as special as the day itself. We craft individual and family outfits for birthdays — from elegant salwars to statement sherwanis — each stitched to your precise measurements.</p>
+        <ul class="feature-list">
+          <li>Individual or full family sets</li>
+          <li>Choice of 200+ fabrics &amp; colours</li>
+          <li>Custom embroidery and monogram add-ons</li>
+          <li>Available in both Basic and Plus plans</li>
+        </ul>
+        <div class="price-tag"><span class="price-label">Starting from</span><span class="price-value">₹899</span></div>
+        <div style="margin-top:1.5rem;"><a href="order.html?occasion=Birthday" class="btn btn-primary">Order for Birthday</a></div>
+      </div>
+    </div>
+    <div>
+      <div class="occasion-types">
+        <div class="occ-type"><div class="occ-type-icon">👤</div><div class="occ-type-name">Individual</div><div class="occ-type-desc">Just for you — perfectly fitted single garment</div></div>
+        <div class="occ-type"><div class="occ-type-icon">👨‍👩‍👧</div><div class="occ-type-name">Family Set</div><div class="occ-type-desc">Coordinated look for the whole family</div></div>
+        <div class="occ-type"><div class="occ-type-icon">🎁</div><div class="occ-type-name">Gift Order</div><div class="occ-type-desc">Send a tailor-made gift to someone special</div></div>
+      </div>
+      <div style="margin-top:2rem;background:var(--ivory);border:1px solid var(--border);padding:1.5rem;border-radius:2px;">
+        <h4 style="font-size:.9rem;font-weight:500;margin-bottom:.8rem;">Popular Birthday Styles</h4>
+        <div style="display:flex;flex-wrap:wrap;gap:.5rem;">
+          <span class="badge badge-wine">Anarkali Suit</span>
+          <span class="badge badge-wine">Lehenga Choli</span>
+          <span class="badge badge-wine">Sherwani</span>
+          <span class="badge badge-wine">Kurta Pyjama</span>
+          <span class="badge badge-wine">Saree Blouse</span>
+          <span class="badge badge-wine">Salwar Kameez</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARRIAGE -->
+<section class="occ-section alt" id="marriage">
+  <div class="occ-inner reverse">
+    <div>
+      <div style="background:var(--cream);border:1px solid var(--border);padding:2rem;border-radius:2px;">
+        <h3 style="font-family:'Playfair Display',serif;font-size:1.2rem;margin-bottom:1.2rem;">Who We Dress for Weddings</h3>
+        <div style="display:flex;flex-direction:column;gap:.8rem;">
+          <div style="display:flex;gap:.8rem;align-items:center;padding:.6rem;background:var(--wine-faint);border-radius:2px;">
+            <span style="font-size:1.2rem;">👰</span><span style="font-size:.88rem;font-weight:500;">Bride</span>
+          </div>
+          <div style="display:flex;gap:.8rem;align-items:center;padding:.6rem;background:var(--wine-faint);border-radius:2px;">
+            <span style="font-size:1.2rem;">🤵</span><span style="font-size:.88rem;font-weight:500;">Groom</span>
+          </div>
+          <div style="display:flex;gap:.8rem;align-items:center;padding:.6rem;background:var(--ivory);border-radius:2px;">
+            <span style="font-size:1.2rem;">👨‍👩‍👧‍👦</span><span style="font-size:.88rem;font-weight:500;">Bride's Family</span>
+          </div>
+          <div style="display:flex;gap:.8rem;align-items:center;padding:.6rem;background:var(--ivory);border-radius:2px;">
+            <span style="font-size:1.2rem;">👨‍👩‍👦</span><span style="font-size:.88rem;font-weight:500;">Groom's Family</span>
+          </div>
+          <div style="display:flex;gap:.8rem;align-items:center;padding:.6rem;background:var(--ivory);border-radius:2px;">
+            <span style="font-size:1.2rem;">🧑‍🤝‍🧑</span><span style="font-size:.88rem;font-weight:500;">Wedding Party (customised)</span>
+          </div>
+        </div>
+        <div style="margin-top:1.5rem;"><a href="order.html?occasion=Marriage" class="btn btn-primary btn-block">Book Wedding Order</a></div>
+      </div>
+    </div>
+    <div>
+      <div class="occ-num">02</div>
+      <div style="margin-top:1.5rem;">
+        <div class="occ-label">Grand Celebration</div>
+        <h2 class="occ-title">Marriage</h2>
+        <p class="occ-body">A wedding is the grandest occasion — and every garment should match that grandeur. Jeni's specialises in full wedding wardrobes: from the bride's lehenga to the groom's sherwani, and coordinated sets for every family member.</p>
+        <ul class="feature-list">
+          <li>Complete wedding family wardrobe packages</li>
+          <li>Coordinated colour palettes across family sets</li>
+          <li>Premium silk, banarasi &amp; embroidered fabrics</li>
+          <li>Dedicated wedding order manager</li>
+          <li>Multiple fitting consultations</li>
+          <li>Express delivery before the wedding date</li>
+        </ul>
+        <div class="price-tag"><span class="price-label">Starting from</span><span class="price-value">₹2,499</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CUSTOM -->
+<section class="occ-section" id="custom">
+  <div class="occ-inner">
+    <div>
+      <div class="occ-num">03</div>
+      <div style="margin-top:1.5rem;">
+        <div class="occ-label">Any Occasion</div>
+        <h2 class="occ-title">Per-Person Custom</h2>
+        <p class="occ-body">Not every garment needs a grand occasion. Our per-person custom ordering system lets you create any garment — from an office kurta to a festive outfit — with full control over every detail through our add-on system.</p>
+        <ul class="feature-list">
+          <li>Any garment type, any occasion</li>
+          <li>Full add-on customisation system</li>
+          <li>Mix and match fabrics and cuts</li>
+          <li>Online measurement submission or home visit</li>
+          <li>Home delivery across Bengaluru</li>
+        </ul>
+        <div class="price-tag"><span class="price-label">Starting from</span><span class="price-value">₹599</span></div>
+        <div style="margin-top:1.5rem;"><a href="order.html?occasion=Custom" class="btn btn-primary">Start Custom Order</a></div>
+      </div>
+    </div>
+    <div>
+      <div style="background:var(--ivory);border:1px solid var(--border);padding:2rem;border-radius:2px;margin-bottom:1.5rem;">
+        <h4 style="font-size:.9rem;font-weight:500;margin-bottom:1rem;">Add-On System</h4>
+        <div style="display:flex;flex-direction:column;gap:.6rem;">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid var(--border);"><span style="font-size:.88rem;">Embroidery</span><span class="badge badge-gold">from ₹299</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid var(--border);"><span style="font-size:.88rem;">Premium Lining</span><span class="badge badge-gold">from ₹199</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid var(--border);"><span style="font-size:.88rem;">Custom Buttons</span><span class="badge badge-gold">from ₹99</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid var(--border);"><span style="font-size:.88rem;">Monogram</span><span class="badge badge-gold">from ₹149</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;"><span style="font-size:.88rem;">Express Delivery</span><span class="badge badge-gold">from ₹149</span></div>
+        </div>
+      </div>
+      <a href="order.html" class="btn btn-secondary btn-block">Explore Add-Ons in Order Form</a>
+    </div>
+  </div>
+</section>
+
+<footer id="main-footer"></footer>
+<script src="app.js"></script>
+<script>renderNav('occasions.html');</script>
+</body>
+</html>

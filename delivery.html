@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Delivery & Store — Jeni's Boutique</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+<style>
+.delivery-hero{display:grid;grid-template-columns:1fr 1fr;min-height:400px;}
+.dh-left{background:var(--charcoal);padding:8rem 3.5rem 4rem;display:flex;flex-direction:column;justify-content:flex-end;}
+.dh-right{background:var(--wine);padding:8rem 3.5rem 4rem;display:flex;flex-direction:column;justify-content:flex-end;}
+.del-options{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3rem;}
+.del-card{border:1.5px solid var(--border);padding:2rem;border-radius:2px;background:var(--cream);transition:box-shadow .25s,transform .25s;}
+.del-card:hover{box-shadow:0 8px 24px rgba(107,26,42,.08);transform:translateY(-2px);}
+.del-card.featured{background:var(--wine);border-color:var(--wine);}
+.del-card.featured *{color:#fff!important;}
+.del-icon{font-size:2rem;margin-bottom:1rem;}
+.del-name{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:600;color:var(--charcoal);margin-bottom:.5rem;}
+.del-desc{font-size:.88rem;color:var(--muted);line-height:1.65;margin-bottom:1.2rem;}
+.del-feat{list-style:none;display:flex;flex-direction:column;gap:.5rem;margin-bottom:1.5rem;}
+.del-feat li{font-size:.82rem;display:flex;gap:.5rem;color:var(--charcoal);}
+.del-feat li::before{content:'✓';color:var(--gold);font-weight:600;}
+.store-layout{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start;margin-top:3rem;}
+.store-map{background:var(--charcoal);border-radius:2px;padding:3rem;text-align:center;min-height:280px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.2rem;}
+.store-map-icon{font-size:4rem;}
+.store-map-name{font-family:'Playfair Display',serif;font-size:1.4rem;color:#fff;font-weight:600;}
+.store-map-addr{font-size:.88rem;color:rgba(255,255,255,.5);line-height:1.65;}
+.store-map-badge{display:inline-block;padding:.4rem 1.2rem;border:1px solid var(--gold);color:var(--gold);border-radius:2px;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;margin-top:.5rem;}
+.hours-table{width:100%;border-collapse:collapse;margin-top:1rem;}
+.hours-table td{padding:.6rem 0;border-bottom:1px solid var(--border);font-size:.88rem;}
+.hours-table td:last-child{text-align:right;font-weight:500;color:var(--charcoal);}
+.hours-table td:first-child{color:var(--muted);}
+.hours-table tr:last-child td{border-bottom:none;}
+.faq-item{border:1px solid var(--border);border-radius:2px;overflow:hidden;margin-bottom:.6rem;}
+.faq-q{display:flex;justify-content:space-between;align-items:center;padding:1.2rem 1.5rem;cursor:pointer;background:var(--cream);}
+.faq-q:hover{background:var(--ivory);}
+.faq-q-text{font-size:.92rem;font-weight:500;color:var(--charcoal);}
+.faq-toggle{font-size:1.2rem;color:var(--muted);transition:transform .2s;}
+.faq-a{display:none;padding:0 1.5rem 1.2rem;font-size:.88rem;color:var(--muted);line-height:1.7;}
+.faq-item.open .faq-a{display:block;}
+.faq-item.open .faq-toggle{transform:rotate(45deg);}
+@media(max-width:900px){.delivery-hero,.store-layout{grid-template-columns:1fr;}.del-options{grid-template-columns:1fr;}.dh-left,.dh-right{padding:7rem 2rem 3rem;}.section{padding:3rem 2rem;}}
+</style>
+</head>
+<body>
+<nav id="main-nav"></nav>
+<div id="mobile-nav" class="mobile-nav"></div>
+
+<div class="delivery-hero">
+  <div class="dh-left">
+    <div style="font-size:.75rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:.8rem;">Delivery</div>
+    <h1 style="font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:700;line-height:1.1;color:#fff;">From our boutique<br/><em style="color:var(--gold);">to your door.</em></h1>
+    <p style="font-size:.95rem;color:rgba(255,255,255,.55);margin-top:.8rem;max-width:380px;line-height:1.75;">We deliver across Bengaluru, Karnataka with real-time tracking. Every garment is packaged with care.</p>
+  </div>
+  <div class="dh-right">
+    <div style="font-size:.75rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-light);font-weight:500;margin-bottom:.8rem;">Offline Store</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3vw,2.5rem);font-weight:700;line-height:1.1;color:#fff;">Visit us in<br/>Bengaluru.</h2>
+    <p style="font-size:.95rem;color:rgba(255,255,255,.65);margin-top:.8rem;line-height:1.75;">Touch fabrics, meet our master tailors, and get measured in person at our store.</p>
+    <a href="#store" class="btn btn-gold" style="margin-top:1.5rem;align-self:flex-start;">Store Details →</a>
+  </div>
+</div>
+
+<!-- DELIVERY OPTIONS -->
+<section class="section">
+  <div class="section-label">Delivery Methods</div>
+  <h2 class="section-title">Choose how you receive your garment</h2>
+  <div class="del-options">
+    <div class="del-card">
+      <div class="del-icon">🏠</div>
+      <div class="del-name">Standard Home Delivery</div>
+      <div class="del-desc">Your finished garment delivered to your doorstep within Bengaluru, Karnataka. Beautifully packaged and tracked at every step.</div>
+      <ul class="del-feat">
+        <li>5–7 business days</li>
+        <li>Real-time tracking</li>
+        <li>Signature on delivery</li>
+        <li>Covered under Basic &amp; Plus</li>
+      </ul>
+      <span class="badge badge-muted">Free with order</span>
+    </div>
+    <div class="del-card featured">
+      <div class="del-icon">⚡</div>
+      <div class="del-name">Express Delivery</div>
+      <div class="del-desc">Need it fast? Our express service guarantees delivery within 48 hours of order confirmation.</div>
+      <ul class="del-feat">
+        <li>48-hour guarantee</li>
+        <li>Priority tailoring queue</li>
+        <li>Real-time tracking</li>
+        <li>Available on Plus plan</li>
+      </ul>
+      <span style="display:inline-block;padding:.3rem .85rem;border-radius:2px;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;font-weight:600;background:var(--gold);color:var(--wine-deep)!important;border:none;">+₹149 add-on</span>
+    </div>
+    <div class="del-card">
+      <div class="del-icon">🏪</div>
+      <div class="del-name">Store Pickup</div>
+      <div class="del-desc">Pick up your order at our Bengaluru boutique. Meet the team, try on your garment and get adjustments on the spot.</div>
+      <ul class="del-feat">
+        <li>Ready in 5–7 days</li>
+        <li>On-the-spot fitting</li>
+        <li>Minor alterations free</li>
+        <li>Mon–Sat 10AM–8PM</li>
+      </ul>
+      <span class="badge badge-success">No extra charge</span>
+    </div>
+  </div>
+</section>
+
+<!-- STORE INFO -->
+<section class="section alt" id="store">
+  <div class="section-label">Our Store</div>
+  <h2 class="section-title">Visit Jeni's Boutique in Bengaluru</h2>
+  <div class="store-layout">
+    <div>
+      <div class="store-map">
+        <div class="store-map-icon">📍</div>
+        <div class="store-map-name">Jeni's Boutique</div>
+        <div class="store-map-addr">
+          Shop No. 14, Block B<br/>
+          Bengaluru Main Market<br/>
+          Bengaluru — 560001
+        </div>
+        <div class="store-map-badge">Bengaluru, Karnataka, India</div>
+      </div>
+      <div style="margin-top:1.2rem;display:flex;gap:.8rem;flex-wrap:wrap;">
+        <a href="https://maps.google.com/?q=Bengaluru+Karnataka+India" target="_blank" class="btn btn-secondary">Open in Maps</a>
+        <a href="tel:+919535629318" class="btn btn-primary">Call Store</a>
+      </div>
+    </div>
+    <div>
+      <div style="background:var(--cream);border:1px solid var(--border);padding:2rem;border-radius:2px;margin-bottom:1.5rem;">
+        <h3 style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:600;margin-bottom:1rem;">Store Hours</h3>
+        <table class="hours-table">
+          <tr><td>Monday – Friday</td><td>10:00 AM – 8:00 PM</td></tr>
+          <tr><td>Saturday</td><td>10:00 AM – 8:00 PM</td></tr>
+          <tr><td>Sunday</td><td>11:00 AM – 6:00 PM</td></tr>
+          <tr><td>Public Holidays</td><td>By appointment</td></tr>
+        </table>
+      </div>
+      <div style="background:var(--cream);border:1px solid var(--border);padding:2rem;border-radius:2px;">
+        <h3 style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:600;margin-bottom:1rem;">Contact Us</h3>
+        <div style="display:flex;flex-direction:column;gap:.8rem;">
+          <div style="display:flex;gap:.8rem;align-items:center;"><span style="font-size:1.1rem;">📞</span><div><div style="font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;">Phone</div><a href="tel:+919535629318" style="font-size:.9rem;font-weight:500;color:var(--wine);text-decoration:none;">+91 9535629318</a></div></div>
+          <div style="display:flex;gap:.8rem;align-items:center;"><span style="font-size:1.1rem;">💬</span><div><div style="font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;">WhatsApp</div><a href="https://wa.me/919535629318" target="_blank" style="font-size:.9rem;font-weight:500;color:var(--wine);text-decoration:none;">Message Us</a></div></div>
+          <div style="display:flex;gap:.8rem;align-items:center;"><span style="font-size:1.1rem;">✉️</span><div><div style="font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;">Email</div><a href="mailto:lucky111390@gmail.com" style="font-size:.9rem;font-weight:500;color:var(--wine);text-decoration:none;">lucky111390@gmail.com</a></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section">
+  <div class="section-label">FAQ</div>
+  <h2 class="section-title">Delivery questions answered</h2>
+  <div style="max-width:700px;margin-top:2rem;">
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <div class="faq-q"><span class="faq-q-text">How do I track my order?</span><span class="faq-toggle">+</span></div>
+      <div class="faq-a">Go to our <a href="track.html" style="color:var(--wine);">Track Order</a> page and enter your Order ID. You'll see real-time status updates including cutting, stitching, quality check, and delivery stages.</div>
+    </div>
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <div class="faq-q"><span class="faq-q-text">Can I change my delivery address after placing an order?</span><span class="faq-toggle">+</span></div>
+      <div class="faq-a">Yes — please contact us within 24 hours of placing your order via WhatsApp or phone. Once the garment is dispatched, changes may not be possible.</div>
+    </div>
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <div class="faq-q"><span class="faq-q-text">Do you deliver outside Bengaluru, Karnataka?</span><span class="faq-toggle">+</span></div>
+      <div class="faq-a">Currently we deliver within Bengaluru, Karnataka. For orders outside Bengaluru region, please contact us — we may arrange courier delivery for an additional charge depending on location.</div>
+    </div>
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <div class="faq-q"><span class="faq-q-text">What if my garment doesn't fit correctly?</span><span class="faq-toggle">+</span></div>
+      <div class="faq-a">We offer one free alteration on all orders if the measurements submitted by you matched our tailor's stitching. Visit our store or contact us to arrange a correction.</div>
+    </div>
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <div class="faq-q"><span class="faq-q-text">How is the garment packaged for delivery?</span><span class="faq-toggle">+</span></div>
+      <div class="faq-a">Every garment is carefully folded, wrapped in tissue, placed in a garment bag and boxed securely. Plus plan orders include premium gift-style packaging.</div>
+    </div>
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <div class="faq-q"><span class="faq-q-text">When is payment collected?</span><span class="faq-toggle">+</span></div>
+      <div class="faq-a">For home delivery, we accept Cash on Delivery, UPI, or bank transfer. Payment can also be arranged via WhatsApp before dispatch. Card payments are accepted at our Bengaluru store.</div>
+    </div>
+  </div>
+</section>
+
+<footer id="main-footer"></footer>
+<script src="app.js"></script>
+<script>renderNav('delivery.html');</script>
+</body>
+</html>

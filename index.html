@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Jeni's Boutique — Tailoring Management System</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+<style>
+.hero{min-height:100vh;display:flex;align-items:center;padding:8rem 3.5rem 4rem;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:0;right:0;width:52%;height:100%;background:var(--ivory);clip-path:polygon(14% 0,100% 0,100% 100%,0 100%);z-index:0;}
+.hero-content{position:relative;z-index:2;max-width:600px;}
+.hero-eyebrow{font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:1.2rem;display:flex;align-items:center;gap:.8rem;}
+.hero-eyebrow::before{content:'';width:32px;height:1px;background:var(--gold);}
+.hero-title{font-family:'Playfair Display',serif;font-size:clamp(3rem,5.5vw,5.5rem);font-weight:700;line-height:1.06;color:var(--charcoal);margin-bottom:1.5rem;}
+.hero-title em{color:var(--wine);font-style:italic;}
+.hero-sub{font-size:1.05rem;line-height:1.75;color:var(--muted);max-width:460px;margin-bottom:2.5rem;}
+.hero-actions{display:flex;gap:1rem;flex-wrap:wrap;}
+.hero-circle{position:absolute;right:7%;top:50%;transform:translateY(-50%);z-index:2;width:220px;height:220px;border-radius:50%;background:var(--wine);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:.3rem;}
+.hero-circle-main{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:600;color:#fff;font-style:italic;}
+.hero-circle-sub{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.6);}
+.occ-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3rem;}
+.occ-card{background:var(--cream);border:1px solid var(--border);padding:2.2rem 1.8rem;border-radius:2px;position:relative;overflow:hidden;transition:transform .25s,box-shadow .25s;cursor:pointer;text-decoration:none;display:block;color:inherit;}
+.occ-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--wine);transform:scaleX(0);transform-origin:left;transition:transform .25s;}
+.occ-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(107,26,42,.1);}
+.occ-card:hover::after{transform:scaleX(1);}
+.occ-icon{font-size:2rem;margin-bottom:1rem;}
+.occ-name{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:600;color:var(--charcoal);margin-bottom:.6rem;}
+.occ-desc{font-size:.88rem;color:var(--muted);line-height:1.65;}
+.step-flow{display:flex;align-items:flex-start;gap:0;margin-top:3rem;overflow-x:auto;padding-bottom:1rem;}
+.step-item{flex:1;min-width:150px;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;}
+.step-item:not(:last-child)::after{content:'→';position:absolute;right:-18px;top:22px;font-size:1.2rem;color:var(--gold);}
+.step-circle{width:48px;height:48px;border-radius:50%;background:var(--wine);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:600;color:#fff;margin-bottom:.8rem;flex-shrink:0;}
+.step-label{font-size:.85rem;font-weight:500;color:var(--charcoal);}
+.step-desc{font-size:.78rem;color:var(--muted);margin-top:.3rem;}
+.plan-compare{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:3rem;}
+.plan-c{background:var(--cream);border:1px solid var(--border);padding:2rem;border-radius:2px;}
+.plan-c.featured{background:var(--wine);border-color:var(--wine);}
+.plan-c h3{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;margin-bottom:.5rem;}
+.plan-c.featured h3,.plan-c.featured p,.plan-c.featured li{color:#fff!important;}
+.plan-c ul{list-style:none;margin:1.2rem 0;display:flex;flex-direction:column;gap:.6rem;}
+.plan-c li{font-size:.88rem;display:flex;gap:.6rem;align-items:baseline;}
+.plan-c li::before{content:'✦';color:var(--gold);font-size:.6rem;flex-shrink:0;}
+.plan-c.featured li::before{color:var(--gold-light);}
+.testimonials{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3rem;}
+.testimonial{background:var(--cream);border:1px solid var(--border);padding:1.8rem;border-radius:2px;}
+.t-quote{font-family:'Playfair Display',serif;font-size:1rem;font-style:italic;color:var(--charcoal);line-height:1.65;margin-bottom:1.2rem;}
+.t-name{font-size:.82rem;font-weight:500;color:var(--wine);}
+.t-occasion{font-size:.75rem;color:var(--muted);}
+.cta-band{background:var(--wine);padding:5rem 3.5rem;text-align:center;}
+.cta-band h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);color:#fff;font-weight:700;margin-bottom:1rem;}
+.cta-band p{color:rgba(255,255,255,.6);font-size:1rem;max-width:480px;margin:0 auto 2rem;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+.hero-content>*{animation:fadeUp .7s both;}
+.hero-content>.hero-eyebrow{animation-delay:.1s;}
+.hero-content>.hero-title{animation-delay:.22s;}
+.hero-content>.hero-sub{animation-delay:.34s;}
+.hero-content>.hero-actions{animation-delay:.46s;}
+.hero-circle{animation:fadeUp .7s .55s both;}
+@media(max-width:900px){
+  .hero{flex-direction:column;padding:7rem 2rem 4rem;}
+  .hero::before{display:none;}
+  .hero-circle{position:static;transform:none;margin-top:2rem;}
+  .occ-grid,.plan-compare,.testimonials{grid-template-columns:1fr;}
+  .step-flow{gap:1rem;}
+  .step-item:not(:last-child)::after{display:none;}
+}
+</style>
+</head>
+<body>
+<nav id="main-nav"></nav>
+<div id="mobile-nav" class="mobile-nav"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-eyebrow">Tailoring Management System</div>
+    <h1 class="hero-title">Elegance,<br/><em>crafted for you.</em></h1>
+    <p class="hero-sub">From birthday celebrations to grand weddings — Jeni's Boutique brings precision tailoring, curated fabrics, and home delivery right to your door.</p>
+    <div class="hero-actions">
+      <a href="order.html" class="btn btn-primary">Start Your Order</a>
+      <a href="occasions.html" class="btn btn-secondary">Explore Occasions</a>
+    </div>
+  </div>
+  <div class="hero-circle">
+    <div class="hero-circle-main">Est. 2024</div>
+    <div class="hero-circle-sub">Premium Boutique</div>
+    <div class="hero-circle-sub">Bengaluru, Karnataka, India</div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat"><div class="stat-num">500+</div><div class="stat-label">Happy Clients</div></div>
+  <div class="stat"><div class="stat-num">48h</div><div class="stat-label">Avg. Turnaround</div></div>
+  <div class="stat"><div class="stat-num">200+</div><div class="stat-label">Fabric Choices</div></div>
+  <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Custom Fit</div></div>
+</div>
+
+<!-- OCCASIONS -->
+<section class="section alt">
+  <div class="section-head">
+    <div class="section-label">What We Create For</div>
+    <h2 class="section-title">Dressed for every moment that matters</h2>
+    <p class="section-sub">Individually crafted outfits for you, your family, and your closest ones.</p>
+  </div>
+  <div class="occ-grid">
+    <a href="occasions.html#birthday" class="occ-card">
+      <div class="occ-icon">🎂</div>
+      <div class="occ-name">Birthday</div>
+      <div class="occ-desc">Make your special day unforgettable with a bespoke outfit tailored to your exact style.</div>
+      <div class="tag" style="margin-top:1rem;">Individual & Family</div>
+    </a>
+    <a href="occasions.html#marriage" class="occ-card">
+      <div class="occ-icon">💍</div>
+      <div class="occ-name">Marriage</div>
+      <div class="occ-desc">Coordinated, elegant ensembles for the bride, groom, and every family member.</div>
+      <div class="tag" style="margin-top:1rem;">Full Family Sets</div>
+    </a>
+    <a href="occasions.html#custom" class="occ-card">
+      <div class="occ-icon">✨</div>
+      <div class="occ-name">Per-Person Custom</div>
+      <div class="occ-desc">Any occasion, any season — with your choice of cloth, cut, and add-on customisations.</div>
+      <div class="tag" style="margin-top:1rem;">Add-on System</div>
+    </a>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section">
+  <div class="section-head">
+    <div class="section-label">The Process</div>
+    <h2 class="section-title">From cloth to your door</h2>
+  </div>
+  <div class="step-flow">
+    <div class="step-item"><div class="step-circle">1</div><div class="step-label">Choose Fabric</div><div class="step-desc">200+ options online</div></div>
+    <div class="step-item"><div class="step-circle">2</div><div class="step-label">Submit Measurements</div><div class="step-desc">Online or home visit</div></div>
+    <div class="step-item"><div class="step-circle">3</div><div class="step-label">Master Tailoring</div><div class="step-desc">Expert hands</div></div>
+    <div class="step-item"><div class="step-circle">4</div><div class="step-label">Quality Check</div><div class="step-desc">Perfect fit assured</div></div>
+    <div class="step-item"><div class="step-circle">5</div><div class="step-label">Home Delivery</div><div class="step-desc">Tracked, on time</div></div>
+  </div>
+  <div style="text-align:center;margin-top:3rem;"><a href="order.html" class="btn btn-primary">Place Order Now</a></div>
+</section>
+
+<!-- PLANS -->
+<section class="section alt">
+  <div class="section-head">
+    <div class="section-label">Our Plans</div>
+    <h2 class="section-title">Choose what suits you</h2>
+  </div>
+  <div class="plan-compare">
+    <div class="plan-c">
+      <div class="badge badge-muted" style="margin-bottom:.8rem;">Standard</div>
+      <h3>Basic Plan</h3>
+      <p style="color:var(--muted);font-size:.88rem;margin-top:.4rem;">For individuals, single garment orders.</p>
+      <ul>
+        <li>Single garment order</li>
+        <li>Standard fabric catalogue</li>
+        <li>Online measurements</li>
+        <li>Home delivery</li>
+        <li>Order tracking</li>
+      </ul>
+      <a href="plans.html" class="btn btn-secondary btn-block">View Details</a>
+    </div>
+    <div class="plan-c featured">
+      <div class="badge badge-gold" style="margin-bottom:.8rem;">✦ Most Popular</div>
+      <h3>Plus Plan</h3>
+      <p>For families, events, and full customisation.</p>
+      <ul>
+        <li>Unlimited garments per order</li>
+        <li>Premium & imported fabrics</li>
+        <li>Home measurement visit</li>
+        <li>Priority express delivery</li>
+        <li>Full add-on system</li>
+        <li>Family coordination sets</li>
+        <li>Dedicated order manager</li>
+      </ul>
+      <a href="plans.html" class="btn btn-gold btn-block">Upgrade to Plus</a>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section">
+  <div class="section-head">
+    <div class="section-label">What Clients Say</div>
+    <h2 class="section-title">Loved by families across Bengaluru</h2>
+  </div>
+  <div class="testimonials">
+    <div class="testimonial">
+      <div class="t-quote">"My wedding lehenga was absolutely perfect. Every stitch, every embroidery detail was exactly as I imagined. Jeni's delivered 2 days early!"</div>
+      <div class="t-name">Ananya Kapoor</div><div class="t-occasion">Marriage — Plus Plan</div>
+    </div>
+    <div class="testimonial">
+      <div class="t-quote">"Ordered birthday outfits for the whole family. The coordination set was stunning and the fabric quality was exceptional. Will definitely order again."</div>
+      <div class="t-name">Rajesh Gupta</div><div class="t-occasion">Birthday — Plus Plan</div>
+    </div>
+    <div class="testimonial">
+      <div class="t-quote">"Quick, professional, and beautiful work. The home measurement visit was so convenient. The kurta fits perfectly — nothing off the shelf ever does."</div>
+      <div class="t-name">Meera Nair</div><div class="t-occasion">Custom Order — Basic Plan</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<div class="cta-band" id="cta-band">
+  <!-- filled by JS based on login state -->
+</div>
+
+<footer id="main-footer"></footer>
+<script src="app.js"></script>
+<script>
+renderNav('index.html');
+document.addEventListener('DOMContentLoaded',()=>{
+  const band=document.getElementById('cta-band');
+  if(!band)return;
+  const user=Auth.currentUser();
+  if(user){
+    band.innerHTML=`
+      <h2>Welcome back, ${user.name.split(' ')[0]}!</h2>
+      <p>Your next bespoke garment is just a few clicks away.</p>
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+        <a href="order.html" class="btn btn-gold">Place New Order</a>
+        <a href="dashboard.html" class="btn" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);">My Dashboard</a>
+      </div>`;
+  } else {
+    band.innerHTML=`
+      <h2>Ready to get started?</h2>
+      <p>Create your account and place your first order today.</p>
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+        <a href="login.html?tab=register" class="btn btn-gold">Create Account</a>
+        <a href="login.html" class="btn" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);">Sign In</a>
+      </div>`;
+  }
+});
+</script>
+</body>
+</html>
